@@ -4,8 +4,8 @@ import kotlinOpenScad.core.ScadModuleBuilder
 
 
 fun ScadModuleBuilder.circle(
-    radius: Double? = null,
-    diameter: Double? = null,
+    radius: Number? = null,
+    diameter: Number? = null,
     fragmentMinimumAngle: Int? = null,
     fragmentMinimumLength: Int? = null,
     fragmentCount: Int? = null,
@@ -22,7 +22,7 @@ fun ScadModuleBuilder.circle(
 }
 
 fun ScadModuleBuilder.square(
-    size: Double,
+    size: Number,
     center: Boolean? = null
 ) {
     val params = _buildParams(
@@ -33,8 +33,8 @@ fun ScadModuleBuilder.square(
 }
 
 fun ScadModuleBuilder.square(
-    sizeX: Double? = null,
-    sizeY: Double? = null,
+    sizeX: Number? = null,
+    sizeY: Number? = null,
     center: Boolean? = null
 ) {
     val params = _buildParams(
@@ -43,4 +43,88 @@ fun ScadModuleBuilder.square(
     )
     _scadBuilder.appendLine("${_readableModifier}square($params);")
 }
+
+
+fun ScadModuleBuilder.polygon(
+    points: List<ScadPoint>? = null,
+    paths: List<List<Number>>? = null,
+    convexity: Int? = null
+) {
+    val params = _buildParams(
+        "points" to points?.map { _buildParamsArray(it.x, it.y) },
+        "paths" to paths?.map { _buildParamsArray(*it.toTypedArray()) },
+        "convexity" to convexity
+    )
+    _scadBuilder.appendLine("${_readableModifier}polygon($params);")
+}
+
+enum class HorizontalAlign(private val str: String) {
+    Left("left"),
+    Center("center"),
+    Right("right");
+
+    override fun toString() = str
+}
+
+enum class VerticalAlign(private val str: String) {
+    Top("top"),
+    Center("center"),
+    BaseLine("baseline"),
+    Bottom("bottom");
+
+    override fun toString() = str
+}
+
+
+enum class TextDirection(private val str: String) {
+    LeftToRight("ltr"),
+    RightToLeft("rtl"),
+    TopToBottom("ttb"),
+    BottomToTop("bbt");
+
+    override fun toString() = str
+}
+
+
+fun ScadModuleBuilder.text(
+    text: String,
+    size: Int? = null,
+    font: String? = null,
+    horizontalAlign: HorizontalAlign? = null,
+    verticalAlign: VerticalAlign? = null,
+    spacing: Number? = null,
+    direction: TextDirection? = null,
+    language: String? = null,
+    script: String? = null,
+    fragmentCount: Int? = null
+) {
+    val params = _buildParams(
+        "text" to _quote(text),
+        "size" to size,
+        "font" to font,
+        "halign" to horizontalAlign,
+        "valign" to verticalAlign,
+        "spacing" to spacing,
+        "direction" to direction,
+        "language" to language,
+        "script" to script,
+        "\$fn" to fragmentCount
+    )
+    _scadBuilder.appendLine("${_readableModifier}text($params);")
+}
+
+
+fun ScadModuleBuilder.offset(
+    radius: Number? = null,
+    delta: Number? = null,
+    chamfer: Boolean? = null
+): ScadModuleBuilder {
+    val params = _buildParams(
+        "r" to radius,
+        "delta" to delta,
+        "chamfer" to chamfer
+    )
+    return _extend("offset($params)")
+}
+
 

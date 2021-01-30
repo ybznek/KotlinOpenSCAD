@@ -4,12 +4,12 @@ import kotlinOpenScad.core.ScadModuleBuilder
 
 
 fun ScadModuleBuilder.linearExtrude(
-    height: Double?,
+    height: Number?,
     center: Boolean? = null,
-    convexity: Double? = null,
-    twist: Double? = null,
+    convexity: Number? = null,
+    twist: Number? = null,
     slices: Int? = null,
-    scale: Double? = null,
+    scale: Number? = null,
     resolution: Int? = null,
 ): ScadModuleBuilder {
     val params = _buildParams(
@@ -25,13 +25,13 @@ fun ScadModuleBuilder.linearExtrude(
 }
 
 fun ScadModuleBuilder.linearExtrude(
-    height: Double?,
+    height: Number?,
     center: Boolean? = null,
-    convexity: Double? = null,
-    twist: Double? = null,
+    convexity: Number? = null,
+    twist: Number? = null,
     slices: Int? = null,
-    scaleX: Double,
-    scaleY: Double,
+    scaleX: Number,
+    scaleY: Number,
     resolution: Int? = null,
 ): ScadModuleBuilder {
     val params = _buildParams(
@@ -49,10 +49,10 @@ fun ScadModuleBuilder.linearExtrude(
 
 
 fun ScadModuleBuilder.rotateExtrude(
-    convexity: Double? = null,
-    angle: Double? = null,
-    fragmentMinimumAngle: Double? = null,
-    fragmentMinimumLength: Double? = null,
+    convexity: Number? = null,
+    angle: Number? = null,
+    fragmentMinimumAngle: Number? = null,
+    fragmentMinimumLength: Number? = null,
     fragmentCount: Int? = null
 ): ScadModuleBuilder {
     val params = _buildParams(

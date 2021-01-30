@@ -20,7 +20,7 @@ class ScadBuilder {
         return module
     }
 
-    fun addModuleCall(name: String, fn: Double?) {
+    fun addModuleCall(name: String, fn: Number?) {
         if (fn == null) {
             b.append("$name();")
         } else {

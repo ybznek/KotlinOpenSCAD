@@ -12,7 +12,8 @@ class ScadModuleBuilder(val _scadBuilder: ScadBuilder, private val modifier: Str
         }
 
     fun _buildGroup(def: String, func: ScadModuleBuilder.() -> Unit) {
-        _scadBuilder.appendLine("$def {")
+        val finalMod = "$_readableModifier $def".trim()
+        _scadBuilder.appendLine("$finalMod {")
         _scadBuilder.indent {
             func(createCleanBuilder())
         }
@@ -20,11 +21,11 @@ class ScadModuleBuilder(val _scadBuilder: ScadBuilder, private val modifier: Str
     }
 
     fun of(func: ScadModuleBuilder.() -> Unit) {
-        return _buildGroup(_readableModifier, func)
+        return _buildGroup("", func)
     }
 
     fun _extend(newModifier: String): ScadModuleBuilder {
-        return ScadModuleBuilder(_scadBuilder, modifier = "${_readableModifier}$newModifier")
+        return ScadModuleBuilder(_scadBuilder, modifier = "$_readableModifier $newModifier".trim())
     }
 
     fun _buildParams(vararg params: Pair<String, Any?>): String {
@@ -33,42 +34,45 @@ class ScadModuleBuilder(val _scadBuilder: ScadBuilder, private val modifier: Str
 
         return params
             .filter { x -> x.second != null }
-            .joinToString(separator = ", ") { (name, value) -> "${name}=${tryCastToInt(value)}" }
+            .joinToString(separator = ", ") { (name, value) -> "${name}=${prepareArg(value)}" }
     }
 
     fun _buildParamsArray(vararg params: Any?): String {
         return when (params.size) {
             0 -> "[]"
-            2 -> "[${tryCastToInt(params[0])}, ${tryCastToInt(params[1])}]"
-            3 -> "[${tryCastToInt(params[0])}, ${tryCastToInt(params[1])}, ${tryCastToInt(params[2])}]"
+            2 -> "[${prepareArg(params[0])}, ${prepareArg(params[1])}]"
+            3 -> "[${prepareArg(params[0])}, ${prepareArg(params[1])}, ${prepareArg(params[2])}]"
             else -> params.joinToString(
                 separator = ", ",
                 prefix = "[",
                 postfix = "]"
-            ) { value -> "${tryCastToInt(value)}" }
+            ) { value -> "${prepareArg(value)}" }
         }
 
     }
 
-    private fun tryCastToInt(value: Any?): Any? {
+    private fun prepareArg(value: Any?): Any? {
         return when (value) {
             is Float -> {
-                val intVal = value.toInt()
+                val longVal = value.toLong()
                 when (value) {
-                    intVal.toFloat() -> intVal
+                    longVal.toFloat() -> longVal
                     else -> value
                 }
             }
             is Double -> {
-                val intVal = value.toInt()
+                val longVal = value.toLong()
                 when (value) {
-                    intVal.toDouble() -> intVal
+                    longVal.toDouble() -> longVal
                     else -> value
                 }
             }
+            is Enum<*> -> _quote(value.toString())
             else -> value
         }
     }
+
+    fun _quote(value: String) = "\"" + value.toString().replace("\"", "\\\"") + "\""
 
 
 }
