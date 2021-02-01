@@ -1,25 +1,25 @@
 package kotlinOpenScad.extension.module
 
-import kotlinOpenScad.core.ScadModuleBuilder
-import kotlinOpenScad.extension.call
+import kotlinOpenScad.core.ScadCode
+import kotlinOpenScad.extension.callModule
 
-abstract class AbstractScadCustomModule(private val name: String) {
+abstract class AbstractScadCustomModule(protected val name: String) {
 
-    open fun define(scadModuleBuilder: ScadModuleBuilder) {
-        scadModuleBuilder.defineInternal()
+    open fun define(scadCode: ScadCode) {
+        scadCode.defineInternal()
     }
 
-    abstract fun ScadModuleBuilder.defineInternal()
+    abstract fun ScadCode.defineInternal()
 
-    open fun genericCall(scadModuleBuilder: ScadModuleBuilder, vararg pair: Pair<String, Number>) {
-        scadModuleBuilder.call(name, scadModuleBuilder._buildParams())
+    open fun genericCall(scadCode: ScadCode, vararg pair: Pair<String, Number>) {
+        scadCode.callModule(name, scadCode._buildParams(*pair))
     }
 }
 
-fun ScadModuleBuilder.genericCall(module: AbstractScadCustomModule, vararg pair: Pair<String, Number>) {
+fun ScadCode.genericCall(module: AbstractScadCustomModule, vararg pair: Pair<String, Number>) {
     return module.genericCall(this,*pair)
 }
 
-fun ScadModuleBuilder.define(module: AbstractScadCustomModule) {
+fun ScadCode.define(module: AbstractScadCustomModule) {
     return module.define(this)
 }

@@ -1,36 +1,22 @@
 package kotlinOpenScad.core
 
-import kotlinOpenScad.extension.build
+import java.io.File
+import java.io.IOException
 
 class ScadBuilder {
     private val b = StringBuilder()
     var indentation = 0
 
-    override fun toString(): String {
-        return b.toString()
-    }
 
-    fun module(name: String, fn: Int = 100, function: ScadModuleBuilder.() -> Unit): ScadModule {
-        b.appendLine("module ${name}(\$fn=$fn) {")
-        lateinit var module: ScadModule
-        indent {
-            module = ScadModuleBuilder(this).build(name, function)
-        }
-        b.appendLine("}")
-        return module
-    }
-
-    fun addModuleCall(name: String, fn: Number?) {
-        if (fn == null) {
-            b.append("$name();")
-        } else {
-            b.append("$name(\$fn=${fn});")
-        }
-
-    }
 
     fun appendLine(str: String) {
-        b.appendLine("\t".repeat(indentation) + str)
+        b.appendLine(getIndentationString() + str)
+    }
+
+    private fun getIndentationString(): String {
+        if (indentation < 0)
+            return ""
+        return "\t".repeat(indentation)
     }
 
     fun append(str: String) {
@@ -44,16 +30,31 @@ class ScadBuilder {
     }
 
     inline fun unindent(f: () -> Unit) {
-        if (indentation == 0) {
-            f()
-        } else {
-            indentation--
-            f()
-            indentation++
+        indentation--
+        f()
+        indentation++
+    }
+
+    fun write(file: File) {
+        val oldContent = readOldContent(file)
+        val newContent = b.toString()
+        if (oldContent != newContent) {
+            file.writeText(newContent)
         }
     }
 
-    fun include(path: String) {
-        b.appendLine("include <$path>")
+    private fun readOldContent(file: File): String {
+        try {
+            if (file.exists()) {
+                return file.readText()
+            }
+        } catch (e: IOException) {
+            ; // handle bellow
+        }
+        return ""
+    }
+
+    override fun toString(): String {
+        return b.toString()
     }
 }

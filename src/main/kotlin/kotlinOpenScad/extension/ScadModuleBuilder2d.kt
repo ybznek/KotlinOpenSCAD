@@ -1,9 +1,9 @@
 package kotlinOpenScad.extension
 
-import kotlinOpenScad.core.ScadModuleBuilder
+import kotlinOpenScad.core.ScadCode
 
 
-fun ScadModuleBuilder.circle(
+fun ScadCode.circle(
     radius: Number? = null,
     diameter: Number? = null,
     fragmentMinimumAngle: Int? = null,
@@ -21,7 +21,7 @@ fun ScadModuleBuilder.circle(
     command("circle($params)")
 }
 
-fun ScadModuleBuilder.square(
+fun ScadCode.square(
     size: Number,
     center: Boolean? = null
 ) {
@@ -32,7 +32,7 @@ fun ScadModuleBuilder.square(
     command("square($params)")
 }
 
-fun ScadModuleBuilder.square(
+fun ScadCode.square(
     sizeX: Number? = null,
     sizeY: Number? = null,
     center: Boolean? = null
@@ -45,7 +45,7 @@ fun ScadModuleBuilder.square(
 }
 
 
-fun ScadModuleBuilder.polygon(
+fun ScadCode.polygon(
     points: List<ScadPoint>? = null,
     paths: List<List<Number>>? = null,
     convexity: Int? = null
@@ -86,8 +86,8 @@ enum class TextDirection(private val str: String) {
 }
 
 
-fun ScadModuleBuilder.text(
-    text: String,
+fun ScadCode.text(
+    text: Any,
     size: Int? = null,
     font: String? = null,
     horizontalAlign: HorizontalAlign? = null,
@@ -99,7 +99,7 @@ fun ScadModuleBuilder.text(
     fragmentCount: Int? = null
 ) {
     val params = _buildParams(
-        "text" to _quote(text),
+        "text" to prepareText(text),
         "size" to size,
         "font" to font,
         "halign" to horizontalAlign,
@@ -113,12 +113,20 @@ fun ScadModuleBuilder.text(
     command("text($params)")
 }
 
+private fun ScadCode.prepareText(text: Any): String {
+    return when (text) {
+        is Number -> "str($text)"
+        is String -> _quote(text)
+        else -> _quote(text.toString())
+    }
+}
 
-fun ScadModuleBuilder.offset(
+
+fun ScadCode.offset(
     radius: Number? = null,
     delta: Number? = null,
     chamfer: Boolean? = null
-): ScadModuleBuilder {
+): ScadCode {
     val params = _buildParams(
         "r" to radius,
         "delta" to delta,

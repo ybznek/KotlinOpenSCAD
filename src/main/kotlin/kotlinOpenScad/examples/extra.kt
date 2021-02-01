@@ -1,6 +1,6 @@
 package kotlinOpenScad.examples
 
-import kotlinOpenScad.core.ScadModuleBuilder
+import kotlinOpenScad.core.ScadCode
 import kotlinOpenScad.extension.ScadPoint
 import kotlinOpenScad.extension.cylinder
 import kotlinOpenScad.extension.linearExtrude
@@ -9,14 +9,14 @@ import kotlinOpenScad.extension.translate
 import kotlin.math.cos
 import kotlin.math.sin
 
-fun ScadModuleBuilder.boltHole(radius: Number, topRadius: Number, height: Number, coneHeight: Number) {
+fun ScadCode.boltHole(radius: Number, topRadius: Number, height: Number, coneHeight: Number) {
     translate(z = -1).of {
         cylinder(radius = radius, height = height.toDouble() + 2)
         translate(z = coneHeight.toDouble() + 1).cylinder(bottomRadius = radius, topRadius = topRadius, height = coneHeight.toDouble() + 2)
     }
 }
 
-fun ScadModuleBuilder.screwNut(radius: Number, height: Number = 2, edges: Int = 6) {
+fun ScadCode.screwNut(radius: Number, height: Number = 2, edges: Int = 6) {
     val stepSize = 360 / edges
 
     val doubleRadius = radius.toDouble()

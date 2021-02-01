@@ -1,6 +1,6 @@
 package kotlinOpenScad.extension.lib
 
-import kotlinOpenScad.core.ScadModuleBuilder
+import kotlinOpenScad.core.ScadCode
 import kotlinOpenScad.extension.ScadPoint
 import kotlinOpenScad.extension.color
 import kotlinOpenScad.extension.cube
@@ -10,7 +10,7 @@ import kotlinOpenScad.extension.rotate
 import kotlinOpenScad.extension.translate
 import kotlinOpenScad.extension.union
 
-fun ScadModuleBuilder.gear(teeth: Int, thick: Number, scale: Number? = null) {
+fun ScadCode.gear(teeth: Int, thick: Number, scale: Number? = null) {
     val params = _buildParams(
         "n" to teeth,
         "thk" to thick,
@@ -29,7 +29,7 @@ fun getPoint(radius: Double, angle: Double): ScadPoint {
 
 
 
-fun ScadModuleBuilder.gear2(teeth: Int, thick: Number, scale: Number) {
+fun ScadCode.gear2(teeth: Int, thick: Number, scale: Number) {
     union {
         difference {
             color(0.7).gear(teeth, thick, scale)

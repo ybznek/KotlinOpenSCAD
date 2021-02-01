@@ -1,34 +1,34 @@
 package kotlinOpenScad.extension
 
-import kotlinOpenScad.core.ScadModuleBuilder
+import kotlinOpenScad.core.ScadCode
 
 
-fun ScadModuleBuilder.translate(x: Number = 0.0, y: Number = 0.0, z: Number = 0.0) = _extend("translate(${_buildParamsArray(x, y, z)})")
+fun ScadCode.translate(x: Number = 0.0, y: Number = 0.0, z: Number = 0.0) = _extend("translate(${_buildParamsArray(x, y, z)})")
 
-fun ScadModuleBuilder.rotate(x: Number = 0.0, y: Number = 0.0, z: Number = 0.0) = _extend("rotate(${_buildParamsArray(x, y, z)})")
-
-
-fun ScadModuleBuilder.scale(x: Number = 0.0, y: Number = 0.0, z: Number = 0.0) = _extend("scale(${_buildParamsArray(x, y, z)})")
+fun ScadCode.rotate(x: Number = 0.0, y: Number = 0.0, z: Number = 0.0) = _extend("rotate(${_buildParamsArray(x, y, z)})")
 
 
-fun ScadModuleBuilder.resize(x: Number = 0.0, y: Number = 0.0, z: Number = 0.0) = _extend("resize(${_buildParamsArray(x, y, z)})")
-
-fun ScadModuleBuilder.group(func: ScadModuleBuilder.() -> Unit) = _extend("group()").of(func)
-
-fun ScadModuleBuilder.mirror(x: Number = 0.0, y: Number = 0.0, z: Number = 0.0) = _extend("mirror(${_buildParamsArray(x, y, z)})")
+fun ScadCode.scale(x: Number = 0.0, y: Number = 0.0, z: Number = 0.0) = _extend("scale(${_buildParamsArray(x, y, z)})")
 
 
-fun ScadModuleBuilder.projection(cut: Boolean = false) = _extend("projection(cut=$cut)")
+fun ScadCode.resize(x: Number = 0.0, y: Number = 0.0, z: Number = 0.0) = _extend("resize(${_buildParamsArray(x, y, z)})")
 
-fun ScadModuleBuilder.comment(comment: String) {
+fun ScadCode.group(func: ScadCode.() -> Unit) = _extend("group()").of(func)
+
+fun ScadCode.mirror(x: Number = 0.0, y: Number = 0.0, z: Number = 0.0) = _extend("mirror(${_buildParamsArray(x, y, z)})")
+
+
+fun ScadCode.projection(cut: Boolean = false) = _extend("projection(cut=$cut)")
+
+fun ScadCode.comment(comment: String) {
     this._scadBuilder.appendLine("// $comment")
 }
 
-fun ScadModuleBuilder.color(gray: Double, alpha: Double? = null): ScadModuleBuilder {
+fun ScadCode.color(gray: Double, alpha: Double? = null): ScadCode {
     return color(gray, gray, gray, alpha = alpha)
 }
 
-fun ScadModuleBuilder.color(r: Double, g: Double, b: Double, alpha: Double? = null): ScadModuleBuilder {
+fun ScadCode.color(r: Double, g: Double, b: Double, alpha: Double? = null): ScadCode {
     val colorMod = when (alpha) {
         null -> "color([$r,$g,$b])"
         else -> "color([$r,$g,$b], $alpha)"
@@ -36,7 +36,7 @@ fun ScadModuleBuilder.color(r: Double, g: Double, b: Double, alpha: Double? = nu
     return _extend(colorMod)
 }
 
-fun ScadModuleBuilder.color(name: String, alpha: Double? = null): ScadModuleBuilder {
+fun ScadCode.color(name: String, alpha: Double? = null): ScadCode {
     val colorMod = when (alpha) {
         null -> "color(\"$name\")"
         else -> "color(\"$name\", $alpha)"
@@ -44,18 +44,18 @@ fun ScadModuleBuilder.color(name: String, alpha: Double? = null): ScadModuleBuil
     return _extend(colorMod)
 }
 
-fun ScadModuleBuilder.highlight(): ScadModuleBuilder {
+fun ScadCode.highlight(): ScadCode {
     return _extend("#")
 }
 
-fun ScadModuleBuilder.sphere(diameter: Number? = null) {
+fun ScadCode.sphere(diameter: Number? = null) {
     val params = _buildParams(
         "d" to diameter
     )
     command("sphere($params)")
 }
 
-fun ScadModuleBuilder.cylinder(
+fun ScadCode.cylinder(
     height: Number?,
     radius: Number? = null,
     bottomRadius: Number? = null,
@@ -85,7 +85,7 @@ fun ScadModuleBuilder.cylinder(
 }
 
 
-fun ScadModuleBuilder.cube(
+fun ScadCode.cube(
     size: Number,
     center: Boolean = false
 ) {
@@ -97,7 +97,7 @@ fun ScadModuleBuilder.cube(
 }
 
 
-fun ScadModuleBuilder.cube(
+fun ScadCode.cube(
     x: Number,
     y: Number,
     z: Number,

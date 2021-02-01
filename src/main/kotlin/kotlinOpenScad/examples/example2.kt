@@ -1,11 +1,11 @@
 package kotlinOpenScad.examples
 
-import kotlinOpenScad.core.ScadModuleBuilder
+import kotlinOpenScad.core.ScadCode
 import kotlinOpenScad.extension.*
 val height = 3.0
 
 
- fun ScadModuleBuilder.example2() {
+ fun ScadCode.example2() {
     baseWithHoles()
 
 
@@ -22,21 +22,21 @@ val height = 3.0
     }
 }
 
-private fun ScadModuleBuilder.baseWithHoles() {
+private fun ScadCode.baseWithHoles() {
     difference {
         base()
         baseHoles()
     }
 }
 
-private fun ScadModuleBuilder.baseHoles() {
+private fun ScadCode.baseHoles() {
     val holeRadius = 3.0
 
     translate(x = 5.0, y = 5.0, z = -0.1).cylinder(height = height + 0.2, radius = holeRadius)
     translate(x = 160.0 - 5.0, y = 40 + 5.0, z = -0.1).cylinder(height = height + 0.2, radius = holeRadius)
 }
 
-private fun ScadModuleBuilder.wheel() {
+private fun ScadCode.wheel() {
     val axeRadius = 1.5
     val wheelRadius = 30.0
     val wheelInnerRadius = 20.0
@@ -83,7 +83,7 @@ private fun ScadModuleBuilder.wheel() {
     }
 }
 
-private fun ScadModuleBuilder.base() {
+private fun ScadCode.base() {
     comment("base")
     val p = listOf(
         ScadPoint(0, 0),

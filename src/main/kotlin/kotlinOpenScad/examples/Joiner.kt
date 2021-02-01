@@ -1,6 +1,6 @@
 package kotlinOpenScad.examples
 
-import kotlinOpenScad.core.ScadModuleBuilder
+import kotlinOpenScad.core.ScadCode
 import kotlinOpenScad.extension.color
 import kotlinOpenScad.extension.comment
 import kotlinOpenScad.extension.cube
@@ -21,7 +21,7 @@ class Joiner(
     val holePlacePercent: Double = 70.0
 ) {
 
-    fun build(builder: ScadModuleBuilder) {
+    fun build(builder: ScadCode) {
         builder.apply {
             difference {
                 base()
@@ -33,7 +33,7 @@ class Joiner(
     }
 
 
-    private fun ScadModuleBuilder.cutEdges() {
+    private fun ScadCode.cutEdges() {
         comment("cut edges")
 
         group {
@@ -87,7 +87,7 @@ class Joiner(
         }
     }
 
-    private fun ScadModuleBuilder.boltHoles() {
+    private fun ScadCode.boltHoles() {
         comment("bolts")
 
 
@@ -159,7 +159,7 @@ class Joiner(
         }
     }
 
-    private fun ScadModuleBuilder.profileHole() {
+    private fun ScadCode.profileHole() {
         comment("hole")
         translate(
             x = (holderThickness - profileThickness) / (100 / holePlacePercent),
@@ -186,7 +186,7 @@ class Joiner(
         }
     }
 
-    private fun ScadModuleBuilder.base() {
+    private fun ScadCode.base() {
         comment("holder")
         color(0.4, alpha = 0.2).union {
             //x

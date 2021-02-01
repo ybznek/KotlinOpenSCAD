@@ -1,3 +1,1 @@
-class ScadModuleName(val name:String) {
-
-}
+class ScadModuleName(val name:String) 

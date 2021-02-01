@@ -1,4 +1,4 @@
-package kotlinOpenScad.extension.number
+package kotlinOpenScad.extension.expr
 
 class GenericExpr(private val expression: String) : ScadExpr() {
     override fun toString() = expression

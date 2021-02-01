@@ -1,9 +1,9 @@
 package kotlinOpenScad.extension
 
-import kotlinOpenScad.core.ScadModuleBuilder
+import kotlinOpenScad.core.ScadCode
 
 
-fun ScadModuleBuilder.linearExtrude(
+fun ScadCode.linearExtrude(
     height: Number?,
     center: Boolean? = null,
     convexity: Number? = null,
@@ -11,7 +11,7 @@ fun ScadModuleBuilder.linearExtrude(
     slices: Int? = null,
     scale: Number? = null,
     resolution: Int? = null,
-): ScadModuleBuilder {
+): ScadCode {
     val params = _buildParams(
         "height" to height,
         "center" to center,
@@ -24,7 +24,7 @@ fun ScadModuleBuilder.linearExtrude(
     return _extend("linear_extrude($params)")
 }
 
-fun ScadModuleBuilder.linearExtrude(
+fun ScadCode.linearExtrude(
     height: Number?,
     center: Boolean? = null,
     convexity: Number? = null,
@@ -33,7 +33,7 @@ fun ScadModuleBuilder.linearExtrude(
     scaleX: Number,
     scaleY: Number,
     resolution: Int? = null,
-): ScadModuleBuilder {
+): ScadCode {
     val params = _buildParams(
         "height" to height,
         "center" to center,
@@ -48,13 +48,13 @@ fun ScadModuleBuilder.linearExtrude(
 
 
 
-fun ScadModuleBuilder.rotateExtrude(
+fun ScadCode.rotateExtrude(
     convexity: Number? = null,
     angle: Number? = null,
     fragmentMinimumAngle: Number? = null,
     fragmentMinimumLength: Number? = null,
     fragmentCount: Int? = null
-): ScadModuleBuilder {
+): ScadCode {
     val params = _buildParams(
         "convexity" to convexity,
         "angle" to angle,

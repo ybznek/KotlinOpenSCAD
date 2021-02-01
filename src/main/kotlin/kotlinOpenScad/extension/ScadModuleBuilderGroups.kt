@@ -1,22 +1,17 @@
 package kotlinOpenScad.extension
 
-import kotlinOpenScad.core.ScadModule
-import kotlinOpenScad.core.ScadModuleBuilder
+import kotlinOpenScad.core.ScadCode
 
-fun ScadModuleBuilder.build(name: String, function: ScadModuleBuilder.() -> Unit): ScadModule {
-    val scadModule = ScadModule(name, _scadBuilder)
-    function(this)
-    return scadModule
-}
 
-fun ScadModuleBuilder.union(func: ScadModuleBuilder.() -> Unit) {
+
+fun ScadCode.union(func: ScadCode.() -> Unit) {
     _buildGroup("union()", func)
 }
 
-fun ScadModuleBuilder.difference(func: ScadModuleBuilder.() -> Unit) {
+fun ScadCode.difference(func: ScadCode.() -> Unit) {
     _buildGroup("difference()", func)
 }
 
-fun ScadModuleBuilder.intersection(func: ScadModuleBuilder.() -> Unit) {
+fun ScadCode.intersection(func: ScadCode.() -> Unit) {
     _buildGroup("intersection()", func)
 }

@@ -1,4 +1,4 @@
-package kotlinOpenScad.extension.number
+package kotlinOpenScad.extension.expr
 
 abstract class ScadExpr : Number() {
     override fun toByte() = throwScadNumberException()
@@ -14,6 +14,7 @@ abstract class ScadExpr : Number() {
     operator fun minus(second: Number): ScadExpr = op("-", second)
     operator fun times(second: Number): ScadExpr = op("*", second)
     operator fun div(second: Number): ScadExpr = op("/", second)
+
     infix fun lt(second: Number): ScadExpr = op("<", second)
     infix fun lte(second: Number): ScadExpr = op("<=", second)
     infix fun eq(second: Number): ScadExpr = op("==", second)

@@ -1,24 +1,20 @@
 import kotlinOpenScad.core.ScadBuilder
-import kotlinOpenScad.core.ScadModuleBuilder
+import kotlinOpenScad.core.ScadCode
 import kotlinOpenScad.examples.Joiner
 import kotlinOpenScad.extension.FOR
+import kotlinOpenScad.extension.FUNCTION
 import kotlinOpenScad.extension.IF
 import kotlinOpenScad.extension.MODULE
-import kotlinOpenScad.extension.ScadPoint
 import kotlinOpenScad.extension.call
-import kotlinOpenScad.extension.circle
 import kotlinOpenScad.extension.cube
-import kotlinOpenScad.extension.difference
-import kotlinOpenScad.extension.highlight
-import kotlinOpenScad.extension.linearExtrude
+import kotlinOpenScad.extension.expr.FN
+import kotlinOpenScad.extension.expr.TimeExpr
+import kotlinOpenScad.extension.expr.ex
 import kotlinOpenScad.extension.module.AbstractScadCustomModule
 import kotlinOpenScad.extension.module.define
-import kotlinOpenScad.extension.number.TimeExpr
-import kotlinOpenScad.extension.number.ex
-import kotlinOpenScad.extension.polygon
 import kotlinOpenScad.extension.rotate
+import kotlinOpenScad.extension.text
 import kotlinOpenScad.extension.translate
-import kotlinOpenScad.extension.union
 import java.io.File
 
 // todo polygedron
@@ -30,94 +26,63 @@ import java.io.File
 class ScadCustomModule(name: String) : AbstractScadCustomModule(name) {
     private val f = ex("f")
 
-    override fun ScadModuleBuilder.defineInternal() {
-        MODULE("test", "$f = 10") {
+    override fun ScadCode.defineInternal() {
+        MODULE(name, "$f = 10") {
             val i = ex("i")
+
             FOR("$i = [0:$f]") {
                 cube(size = i, center = false);
             }
-            IF("1==1", then = {
-                cube(4)
-            }, otherwise = {
-                cube(6)
-            })
+
+            IF("1==1",
+                then = {
+                    cube(4)
+                },
+                otherwise = {
+                    cube(6)
+                })
         }
     }
 
-    fun call(scadModuleBuilder: ScadModuleBuilder, value: Number) {
-        genericCall(scadModuleBuilder, "$f" to value)
+    fun call(scadCode: ScadCode, value: Number) {
+        genericCall(scadCode, "$f" to value)
     }
 }
 
 
 fun main() {
     val b = ScadBuilder()
-    b.include("lib-gear-dh.scad")
-    val car = b.module(name = "car", fn = 10) {
-        rotate(z = ex(360) * TimeExpr).of {
-            Joiner().build(this)
-        }
 
-
-        val m = ScadCustomModule("test")
-        define(m)
-
-        m.call(this, value = 42)
-
-        highlight().call("test", "50")
-
-    }
-
-    car.call(50.0)
-
-
-    val file = File("/dropbox/OpenSCAD/openscadTest.scad")
-    val old = file.readText()
-    val new = b.toString()
-    if (old != new) {
-        file.writeText(new)
-    }
-    println("Hello World!")
-}
-
-
-private fun ScadModuleBuilder.wheel(posX: Number, posY: Number, angleShift: Int = 0) {
-    translate(x = posX, y = posY)
-        .linearExtrude(height = 10)
-        .difference {
-            union {
-                circle(radius = 50)
-                for (angle in 0 until 360 step 10) {
-                    rotate(z = angle + angleShift).translate(x = 50 - 1.0, y = -5).of {
-                        polygon(
-                            points = listOf(
-                                ScadPoint(0, 0),
-                                ScadPoint(5, 5),
-                                ScadPoint(0, 10),
-                            )
-                        )
-                    }
-                }
+    ScadCode(b).apply {
+        include("lib-gear-dh.scad")
+        val mainModule = MODULE(name = "mainModule", "$FN = 10") {
+            rotate(z = TimeExpr * 360).of {
+                Joiner().build(this)
             }
 
-            union {
-                for (angle in 0 until 360 step 30) {
-                    rotate(z = angle + angleShift).translate(x = 15, y = -5).of {
-                        polygon(
-                            points = listOf(
-                                ScadPoint(15, 0),
-                                ScadPoint(0, 2.5),
-                                ScadPoint(0, 7.5),
-                                ScadPoint(15, 10),
-                            )
-                        )
-                    }
+            val iVar = ex("i")
 
-                }
+            val funcName = FUNCTION(
+                name = "sum",
+                params = "a, b",
+                expression = """
+                    a+b
+                """
+            )
+
+            FOR("$iVar = [1:2]") {
+                translate(iVar * 10).text(call(funcName, "1,2"))
             }
-            circle(radius = 10)
 
+            val m = ScadCustomModule("custom")
+            define(m)
+            m.call(this, 3)
 
         }
+
+        call(mainModule)
+    }
+    b.write(File("/dropbox/OpenSCAD/openscadTest.scad"))
+
 }
 

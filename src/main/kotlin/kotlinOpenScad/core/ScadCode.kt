@@ -1,9 +1,9 @@
 package kotlinOpenScad.core
 
 @Suppress("FunctionName", "PropertyName") // functions with "_" in prefix are public for extension
-class ScadModuleBuilder(val _scadBuilder: ScadBuilder, private val modifier: String? = null) {
+class ScadCode(val _scadBuilder: ScadBuilder, private val modifier: String? = null) {
 
-    public fun _createCleanBuilder() = ScadModuleBuilder(_scadBuilder)
+    public fun _createCleanScope() = ScadCode(_scadBuilder)
     val _readableModifier: String
         get() {
             if (modifier == null)
@@ -11,11 +11,11 @@ class ScadModuleBuilder(val _scadBuilder: ScadBuilder, private val modifier: Str
             return "$modifier "
         }
 
-    fun _buildGroup(def: String, func: ScadModuleBuilder.() -> Unit) {
+    fun _buildGroup(def: String, func: ScadCode.() -> Unit) {
         val finalMod = "$_readableModifier $def".trim()
         _scadBuilder.appendLine("$finalMod {")
         _scadBuilder.indent {
-            func(_createCleanBuilder())
+            func(_createCleanScope())
         }
         _scadBuilder.appendLine("}")
     }
@@ -24,12 +24,12 @@ class ScadModuleBuilder(val _scadBuilder: ScadBuilder, private val modifier: Str
         _scadBuilder.appendLine("${_readableModifier}$str;")
     }
 
-    fun of(func: ScadModuleBuilder.() -> Unit) {
+    fun of(func: ScadCode.() -> Unit) {
         return _buildGroup("", func)
     }
 
-    fun _extend(newModifier: String): ScadModuleBuilder {
-        return ScadModuleBuilder(_scadBuilder, modifier = "$_readableModifier $newModifier".trim())
+    fun _extend(newModifier: String): ScadCode {
+        return ScadCode(_scadBuilder, modifier = "$_readableModifier $newModifier".trim())
     }
 
     fun _buildParams(vararg params: Pair<String, Any?>): String {
@@ -48,6 +48,20 @@ class ScadModuleBuilder(val _scadBuilder: ScadBuilder, private val modifier: Str
             postfix = "]",
             transform = { value -> "${prepareArg(value)}" }
         )
+    }
+
+
+    fun addModuleCall(name: String, fn: Number?) {
+        if (fn == null) {
+            _scadBuilder.append("$name();")
+        } else {
+            _scadBuilder.append("$name(\$fn=${fn});")
+        }
+
+    }
+
+    fun include(path: String) {
+        _scadBuilder.appendLine("include <$path>")
     }
 
     private fun prepareArg(value: Any?): Any? {
@@ -72,6 +86,4 @@ class ScadModuleBuilder(val _scadBuilder: ScadBuilder, private val modifier: Str
     }
 
     fun _quote(value: String) = "\"${value.replace(""""""", """\"""")}\""
-
-
 }
