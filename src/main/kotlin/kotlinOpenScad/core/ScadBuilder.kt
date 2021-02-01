@@ -42,4 +42,8 @@ class ScadBuilder {
         f()
         indentation--
     }
+
+    fun include(path: String) {
+        b.appendLine("include <$path>")
+    }
 }

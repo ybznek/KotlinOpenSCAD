@@ -3,7 +3,7 @@ package kotlinOpenScad.core
 @Suppress("FunctionName", "PropertyName") // functions with "_" in prefix are public for extension
 class ScadModuleBuilder(val _scadBuilder: ScadBuilder, private val modifier: String? = null) {
 
-    private fun createCleanBuilder() = ScadModuleBuilder(_scadBuilder)
+    public fun _createCleanBuilder() = ScadModuleBuilder(_scadBuilder)
     val _readableModifier: String
         get() {
             if (modifier == null)
@@ -15,7 +15,7 @@ class ScadModuleBuilder(val _scadBuilder: ScadBuilder, private val modifier: Str
         val finalMod = "$_readableModifier $def".trim()
         _scadBuilder.appendLine("$finalMod {")
         _scadBuilder.indent {
-            func(createCleanBuilder())
+            func(_createCleanBuilder())
         }
         _scadBuilder.appendLine("}")
     }
@@ -38,17 +38,12 @@ class ScadModuleBuilder(val _scadBuilder: ScadBuilder, private val modifier: Str
     }
 
     fun _buildParamsArray(vararg params: Any?): String {
-        return when (params.size) {
-            0 -> "[]"
-            2 -> "[${prepareArg(params[0])}, ${prepareArg(params[1])}]"
-            3 -> "[${prepareArg(params[0])}, ${prepareArg(params[1])}, ${prepareArg(params[2])}]"
-            else -> params.joinToString(
-                separator = ", ",
-                prefix = "[",
-                postfix = "]"
-            ) { value -> "${prepareArg(value)}" }
-        }
-
+        return params.joinToString(
+            separator = ", ",
+            prefix = "[",
+            postfix = "]",
+            transform = { value -> "${prepareArg(value)}" }
+        )
     }
 
     private fun prepareArg(value: Any?): Any? {
@@ -72,7 +67,7 @@ class ScadModuleBuilder(val _scadBuilder: ScadBuilder, private val modifier: Str
         }
     }
 
-    fun _quote(value: String) = "\"" + value.toString().replace("\"", "\\\"") + "\""
+    fun _quote(value: String) = "\"${value.replace(""""""", """\"""")}\""
 
 
 }
