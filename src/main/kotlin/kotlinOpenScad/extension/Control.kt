@@ -10,23 +10,24 @@ fun ScadModuleBuilder.IF(
     then: ScadModuleBuilder.() -> Unit = NOOP,
     otherwise: ScadModuleBuilder.() -> Unit = NOOP,
 ) {
-    _scadBuilder.appendLine("$_readableModifier if ($expression) {")
-    _createCleanBuilder().then()
-    if (otherwise !== NOOP) {
-        _scadBuilder.appendLine("} else {")
-        _createCleanBuilder().otherwise()
+    _buildGroup("if ($expression)") {
+        _createCleanBuilder().then()
+        if (otherwise !== NOOP) {
+            _scadBuilder.unindent {
+                _scadBuilder.appendLine("} else {")
+            }
+            _createCleanBuilder().otherwise()
+        }
     }
-    _scadBuilder.appendLine("}")
 }
 
 fun ScadModuleBuilder.FOR(
     expression: String,
     body: ScadModuleBuilder.() -> Unit = NOOP,
 ) {
-    _scadBuilder.appendLine("$_readableModifier for ($expression)")
-    _scadBuilder.appendLine("{")
-    _createCleanBuilder().body()
-    _scadBuilder.appendLine("}")
+    _buildGroup("for ($expression)") {
+        _createCleanBuilder().body()
+    }
 }
 
 
@@ -35,21 +36,20 @@ fun ScadModuleBuilder.MODULE(
     params: String = "",
     body: ScadModuleBuilder.() -> Unit = NOOP
 ): ScadModuleName {
-    _scadBuilder.appendLine("module $name($params)")
-    _scadBuilder.appendLine("{")
-    _createCleanBuilder().body()
-    _scadBuilder.appendLine("}")
+    _buildGroup("module $name($params)") {
+        _createCleanBuilder().body()
+    }
     return ScadModuleName(name)
 }
 
 fun ScadModuleBuilder.call(
-    name:ScadModuleName,
+    name: ScadModuleName,
     params: String = ""
 ) = call(name.name, params)
 
 fun ScadModuleBuilder.call(
-    name:String,
+    name: String,
     params: String = ""
-){
-    _scadBuilder.appendLine("$_readableModifier ${name}($params);")
+) {
+    command("${name}($params)")
 }

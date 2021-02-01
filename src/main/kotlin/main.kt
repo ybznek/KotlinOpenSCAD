@@ -2,6 +2,7 @@ import kotlinOpenScad.core.ScadBuilder
 import kotlinOpenScad.core.ScadModuleBuilder
 import kotlinOpenScad.examples.Joiner
 import kotlinOpenScad.extension.FOR
+import kotlinOpenScad.extension.IF
 import kotlinOpenScad.extension.MODULE
 import kotlinOpenScad.extension.ScadPoint
 import kotlinOpenScad.extension.call
@@ -10,6 +11,8 @@ import kotlinOpenScad.extension.cube
 import kotlinOpenScad.extension.difference
 import kotlinOpenScad.extension.highlight
 import kotlinOpenScad.extension.linearExtrude
+import kotlinOpenScad.extension.module.AbstractScadCustomModule
+import kotlinOpenScad.extension.module.define
 import kotlinOpenScad.extension.number.TimeExpr
 import kotlinOpenScad.extension.number.ex
 import kotlinOpenScad.extension.polygon
@@ -22,22 +25,28 @@ import java.io.File
 // todo surface
 // todo check with https://hexdocs.pm/open_scad/OpenSCAD.Sphere.html#t:t/0 / or another doc
 // etc
+// todo add posibility to not use module
 
-fun diffPoint(vararg points: ScadPoint): List<ScadPoint> {
-    if (points.isEmpty())
-        return emptyList()
+class ScadCustomModule(name: String) : AbstractScadCustomModule(name) {
+    private val f = ex("f")
 
-
-    val target = ArrayList<ScadPoint>(points.size)
-
-    var prev = points[0]
-    target.add(prev)
-    for (index in 1 until points.size) {
-        val newPoint = points[index]
-        prev = prev.diff(newPoint.x, newPoint.y)
-        target.add(prev)
+    override fun ScadModuleBuilder.defineInternal() {
+        MODULE("test", "$f = 10") {
+            val i = ex("i")
+            FOR("$i = [0:$f]") {
+                cube(size = i, center = false);
+            }
+            IF("1==1", then = {
+                cube(4)
+            }, otherwise = {
+                cube(6)
+            })
+        }
     }
-    return target
+
+    fun call(scadModuleBuilder: ScadModuleBuilder, value: Number) {
+        genericCall(scadModuleBuilder, "$f" to value)
+    }
 }
 
 
@@ -45,18 +54,15 @@ fun main() {
     val b = ScadBuilder()
     b.include("lib-gear-dh.scad")
     val car = b.module(name = "car", fn = 10) {
-        rotate(z = ex("360* $TimeExpr")).of {
+        rotate(z = ex(360) * TimeExpr).of {
             Joiner().build(this)
         }
 
 
-        val f = ex("f")
-        MODULE("test", "$f = 10") {
-            val i = ex("i")
-            FOR("$i = [0:$f]") {
-                cube(size = i, center = false);
-            }
-        }
+        val m = ScadCustomModule("test")
+        define(m)
+
+        m.call(this, value = 42)
 
         highlight().call("test", "50")
 

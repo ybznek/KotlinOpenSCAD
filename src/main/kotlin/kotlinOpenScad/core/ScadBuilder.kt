@@ -43,6 +43,16 @@ class ScadBuilder {
         indentation--
     }
 
+    inline fun unindent(f: () -> Unit) {
+        if (indentation == 0) {
+            f()
+        } else {
+            indentation--
+            f()
+            indentation++
+        }
+    }
+
     fun include(path: String) {
         b.appendLine("include <$path>")
     }

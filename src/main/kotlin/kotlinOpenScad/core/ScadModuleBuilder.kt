@@ -20,6 +20,10 @@ class ScadModuleBuilder(val _scadBuilder: ScadBuilder, private val modifier: Str
         _scadBuilder.appendLine("}")
     }
 
+    fun command(str:String){
+        _scadBuilder.appendLine("${_readableModifier}$str;")
+    }
+
     fun of(func: ScadModuleBuilder.() -> Unit) {
         return _buildGroup("", func)
     }

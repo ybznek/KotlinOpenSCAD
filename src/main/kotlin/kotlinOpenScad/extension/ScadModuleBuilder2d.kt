@@ -18,7 +18,7 @@ fun ScadModuleBuilder.circle(
         "\$fs" to fragmentMinimumLength,
         "\$fn" to fragmentCount
     )
-    _scadBuilder.appendLine("${_readableModifier}circle($params);")
+    command("circle($params)")
 }
 
 fun ScadModuleBuilder.square(
@@ -29,7 +29,7 @@ fun ScadModuleBuilder.square(
         "size" to size,
         "center" to center
     )
-    _scadBuilder.appendLine("${_readableModifier}square($params);")
+    command("square($params)")
 }
 
 fun ScadModuleBuilder.square(
@@ -41,7 +41,7 @@ fun ScadModuleBuilder.square(
         "size" to _buildParamsArray(sizeX, sizeY),
         "center" to center
     )
-    _scadBuilder.appendLine("${_readableModifier}square($params);")
+    command("square($params)")
 }
 
 
@@ -55,7 +55,7 @@ fun ScadModuleBuilder.polygon(
         "paths" to paths?.map { _buildParamsArray(*it.toTypedArray()) },
         "convexity" to convexity
     )
-    _scadBuilder.appendLine("${_readableModifier}polygon($params);")
+    command("polygon($params)")
 }
 
 enum class HorizontalAlign(private val str: String) {
@@ -110,7 +110,7 @@ fun ScadModuleBuilder.text(
         "script" to script,
         "\$fn" to fragmentCount
     )
-    _scadBuilder.appendLine("${_readableModifier}text($params);")
+    command("text($params)")
 }
 
 

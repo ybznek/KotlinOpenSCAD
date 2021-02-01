@@ -16,7 +16,7 @@ fun ScadModuleBuilder.gear(teeth: Int, thick: Number, scale: Number? = null) {
         "thk" to thick,
         "sc" to scale
     )
-    _scadBuilder.appendLine("${_readableModifier}gear($params);")
+    command("gear($params)")
 }
 
 fun getPoint(radius: Double, angle: Double): ScadPoint {

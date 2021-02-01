@@ -1,6 +1,9 @@
+#!/bin/bash
+
+# waits for file modifications and then rebuild/run project
 while true;
 do
-	./watchForChange.sh /home/z/projects/kotlin/kotlinOpenScad/src/main/kotlin/main.kt
+	./watchForChange.sh
 	clear
 	./gradlew --watch-fs compileKotlin run
 done

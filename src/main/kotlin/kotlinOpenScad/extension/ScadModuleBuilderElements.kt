@@ -52,7 +52,7 @@ fun ScadModuleBuilder.sphere(diameter: Number? = null) {
     val params = _buildParams(
         "d" to diameter
     )
-    _scadBuilder.appendLine("${_readableModifier}sphere($params);")
+    command("sphere($params)")
 }
 
 fun ScadModuleBuilder.cylinder(
@@ -81,7 +81,7 @@ fun ScadModuleBuilder.cylinder(
         "h" to height,
         "center" to center
     )
-    _scadBuilder.appendLine("${_readableModifier}cylinder($params);")
+    command("cylinder($params)")
 }
 
 
@@ -93,7 +93,7 @@ fun ScadModuleBuilder.cube(
         "size" to size,
         "center" to center
     )
-    _scadBuilder.appendLine("${_readableModifier}cube($params);")
+    command("cube($params)")
 }
 
 
@@ -107,5 +107,5 @@ fun ScadModuleBuilder.cube(
         "size" to _buildParamsArray(x, y, z),
         "center" to center
     )
-    _scadBuilder.appendLine("${_readableModifier}cube($params);")
+    command("cube($params)")
 }
