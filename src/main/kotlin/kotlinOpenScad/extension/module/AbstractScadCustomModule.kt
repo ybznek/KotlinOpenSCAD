@@ -11,13 +11,13 @@ abstract class AbstractScadCustomModule(protected val name: String) {
 
     abstract fun ScadCode.defineInternal()
 
-    open fun genericCall(scadCode: ScadCode, vararg pair: Pair<String, Number>) {
+    open fun call(scadCode: ScadCode, vararg pair: Pair<String, Number>) {
         scadCode.callModule(name, scadCode._buildParams(*pair))
     }
 }
 
-fun ScadCode.genericCall(module: AbstractScadCustomModule, vararg pair: Pair<String, Number>) {
-    return module.genericCall(this,*pair)
+fun ScadCode.call(module: AbstractScadCustomModule, vararg pair: Pair<String, Number>) {
+    return module.call(this,*pair)
 }
 
 fun ScadCode.define(module: AbstractScadCustomModule) {

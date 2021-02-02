@@ -1,6 +1,7 @@
 package kotlinOpenScad.examples
 
 import kotlinOpenScad.core.ScadCode
+import kotlinOpenScad.extension.FOR
 import kotlinOpenScad.extension.ScadPoint
 import kotlinOpenScad.extension.cylinder
 import kotlinOpenScad.extension.linearExtrude

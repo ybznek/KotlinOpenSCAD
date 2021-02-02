@@ -6,7 +6,8 @@ import kotlinOpenScad.core.ScadCode
 import kotlinOpenScad.extension.expr.ScadExpr
 import kotlinOpenScad.extension.expr.ex
 
-private val NOOP: ScadCode.() -> Unit = { }
+internal val NOOP: ScadCode.() -> Unit = { }
+
 
 fun ScadCode.IF(
     expression: String,
@@ -21,15 +22,6 @@ fun ScadCode.IF(
             }
             _createCleanScope().otherwise()
         }
-    }
-}
-
-fun ScadCode.FOR(
-    expression: String,
-    body: ScadCode.() -> Unit = NOOP,
-) {
-    _buildGroup("for ($expression)") {
-        _createCleanScope().body()
     }
 }
 
@@ -58,7 +50,7 @@ fun ScadCode.call(
 fun ScadCode.callFunction(
     name: String,
     params: String = ""
-) :ScadExpr {
+): ScadExpr {
     return ex("${name}($params)")
 }
 

@@ -99,7 +99,7 @@ fun ScadCode.text(
     fragmentCount: Int? = null
 ) {
     val params = _buildParams(
-        "text" to prepareText(text),
+        "text" to _prepareText(text),
         "size" to size,
         "font" to font,
         "halign" to horizontalAlign,
@@ -113,13 +113,6 @@ fun ScadCode.text(
     command("text($params)")
 }
 
-private fun ScadCode.prepareText(text: Any): String {
-    return when (text) {
-        is Number -> "str($text)"
-        is String -> _quote(text)
-        else -> _quote(text.toString())
-    }
-}
 
 
 fun ScadCode.offset(

@@ -1,16 +1,19 @@
 package kotlinOpenScad.examples
 
 import kotlinOpenScad.core.ScadCode
+import kotlinOpenScad.extension.MODULE
 import kotlinOpenScad.extension.color
 import kotlinOpenScad.extension.comment
 import kotlinOpenScad.extension.cube
 import kotlinOpenScad.extension.difference
 import kotlinOpenScad.extension.group
+import kotlinOpenScad.extension.module.AbstractScadCustomModule
 import kotlinOpenScad.extension.rotate
 import kotlinOpenScad.extension.translate
 import kotlinOpenScad.extension.union
 
 class Joiner(
+    name: String,
     val holderEdge: Double = 20.0,
     val holderThickness: Double = 7.0,
     val holderLength: Double = 70.0,
@@ -19,7 +22,13 @@ class Joiner(
     val profileEdge: Double = 15.0,
     val profileThickness: Double = 1.5,
     val holePlacePercent: Double = 70.0
-) {
+) : AbstractScadCustomModule(name) {
+
+    override fun ScadCode.defineInternal() {
+        MODULE(name) {
+            build(this)
+        }
+    }
 
     fun build(builder: ScadCode) {
         builder.apply {
@@ -106,7 +115,7 @@ class Joiner(
             ).of {
                 rotate(x = 90).boltHole(1.5, topRadius, height = thckheight1, coneHeight = conHeight)
 
-                translate(y = nutIn+1).rotate(x = 90).screwNut(radius = 5.5 / 2, height = 2, edges = 6)
+                translate(y = nutIn + 1).rotate(x = 90).screwNut(radius = 5.5 / 2, height = 2, edges = 6)
             }
             translate(
                 x = eq1,
@@ -144,7 +153,7 @@ class Joiner(
                 y = thckheight1
             ).of {
                 rotate(x = 90).boltHole(1.5, topRadius, height = thckheight1, coneHeight = conHeight)
-                translate(y = nutIn+1).rotate(x = 90).screwNut(radius = 5.5 / 2, height = 2, edges = 6)
+                translate(y = nutIn + 1).rotate(x = 90).screwNut(radius = 5.5 / 2, height = 2, edges = 6)
             }
 
             translate(
@@ -202,5 +211,7 @@ class Joiner(
             cube(holderEdge, holderThickness, holderLength)
         }
     }
+
+
 }
 

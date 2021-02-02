@@ -20,7 +20,7 @@ class ScadCode(val _scadBuilder: ScadBuilder, private val modifier: String? = nu
         _scadBuilder.appendLine("}")
     }
 
-    fun command(str:String){
+    fun command(str: String) {
         _scadBuilder.appendLine("${_readableModifier}$str;")
     }
 
@@ -50,16 +50,6 @@ class ScadCode(val _scadBuilder: ScadBuilder, private val modifier: String? = nu
         )
     }
 
-
-    fun addModuleCall(name: String, fn: Number?) {
-        if (fn == null) {
-            _scadBuilder.append("$name();")
-        } else {
-            _scadBuilder.append("$name(\$fn=${fn});")
-        }
-
-    }
-
     fun include(path: String) {
         _scadBuilder.appendLine("include <$path>")
     }
@@ -86,4 +76,12 @@ class ScadCode(val _scadBuilder: ScadBuilder, private val modifier: String? = nu
     }
 
     fun _quote(value: String) = "\"${value.replace(""""""", """\"""")}\""
+
+    fun _prepareText(text: Any): String {
+        return when (text) {
+            is Number -> "str($text)"
+            is String -> _quote(text)
+            else -> _quote(text.toString())
+        }
+    }
 }

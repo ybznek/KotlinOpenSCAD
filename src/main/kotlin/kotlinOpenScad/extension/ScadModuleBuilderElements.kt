@@ -3,19 +3,19 @@ package kotlinOpenScad.extension
 import kotlinOpenScad.core.ScadCode
 
 
-fun ScadCode.translate(x: Number = 0.0, y: Number = 0.0, z: Number = 0.0) = _extend("translate(${_buildParamsArray(x, y, z)})")
+fun ScadCode.translate(x: Number = 0, y: Number = 0, z: Number = 0) = _extend("translate(${_buildParamsArray(x, y, z)})")
 
-fun ScadCode.rotate(x: Number = 0.0, y: Number = 0.0, z: Number = 0.0) = _extend("rotate(${_buildParamsArray(x, y, z)})")
-
-
-fun ScadCode.scale(x: Number = 0.0, y: Number = 0.0, z: Number = 0.0) = _extend("scale(${_buildParamsArray(x, y, z)})")
+fun ScadCode.rotate(x: Number = 0, y: Number = 0, z: Number = 0) = _extend("rotate(${_buildParamsArray(x, y, z)})")
 
 
-fun ScadCode.resize(x: Number = 0.0, y: Number = 0.0, z: Number = 0.0) = _extend("resize(${_buildParamsArray(x, y, z)})")
+fun ScadCode.scale(x: Number = 0, y: Number = 0, z: Number = 0) = _extend("scale(${_buildParamsArray(x, y, z)})")
+
+
+fun ScadCode.resize(x: Number = 0, y: Number = 0, z: Number = 0) = _extend("resize(${_buildParamsArray(x, y, z)})")
 
 fun ScadCode.group(func: ScadCode.() -> Unit) = _extend("group()").of(func)
 
-fun ScadCode.mirror(x: Number = 0.0, y: Number = 0.0, z: Number = 0.0) = _extend("mirror(${_buildParamsArray(x, y, z)})")
+fun ScadCode.mirror(x: Number = 0, y: Number = 0, z: Number = 0) = _extend("mirror(${_buildParamsArray(x, y, z)})")
 
 
 fun ScadCode.projection(cut: Boolean = false) = _extend("projection(cut=$cut)")
@@ -94,6 +94,22 @@ fun ScadCode.cube(
         "center" to center
     )
     command("cube($params)")
+}
+
+
+fun ScadCode.surface(
+    filename: Any,
+    center: Boolean? = null,
+    invert: Boolean? = null,
+    convexity: Int? = null
+) {
+    val params = _buildParams(
+        "file" to _prepareText(filename),
+        "center" to center,
+        "invert" to invert,
+        "convexity" to convexity,
+    )
+    command("surface($params)")
 }
 
 
